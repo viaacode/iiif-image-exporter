@@ -1,0 +1,16 @@
+viaa:
+    logging:
+        level: DEBUG
+app:
+    mediahaven: 
+        host: !ENV ${MEDIAHAVEN_HOST}
+        username: !ENV ${MEDIAHAVEN_USERNAME}
+        password: !ENV ${MEDIAHAVEN_PASSWORD}
+        client: !ENV ${MEDIAHAVEN_CLIENT_ID}
+        secret: !ENV ${MEDIAHAVEN_CLIENT_SECRET}
+        export_location_id: !ENV ${MEDIAHAVEN_EXPORT_LOCATION_ID}
+    rabbitmq:
+        username: !ENV ${RABBITMQ_USERNAME}
+        password: !ENV ${RABBITMQ_PASSWORD}
+        host: !ENV ${RABBITMQ_HOST}
+        queue: !ENV ${RABBITMQ_QUEUE}
