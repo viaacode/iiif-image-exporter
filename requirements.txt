@@ -12,3 +12,4 @@ structlog==24.2.0
 urllib3==2.2.2
 viaa-chassis==0.2.1
 pytest==8.3.2
+pytest-cov==5.0.0
