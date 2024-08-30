@@ -58,7 +58,7 @@ class Consumer:
                 "ExportLocationId": config_parser.app_cfg["mediahaven"]["export_location_id"],
                 "Reason": "IIIF image processing.",
                 "Combine": "Zip",
-                "DestinationPath": visibility
+                "DestinationPath": f"{visibility}/{msg['dcterms_format']}"
             }
             
             try:
