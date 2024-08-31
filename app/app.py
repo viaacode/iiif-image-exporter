@@ -79,7 +79,7 @@ class Consumer:
             + characters
             + "/"
             + fragment_id
-            + ".jph"
+            + ".jp2"
             print(f"deleting {file_to_delete}")
             self.remove_file(file_to_delete)
 
