@@ -15,6 +15,7 @@ RUN apt update && apt install -y exiftool && apt install -y libmagickwand-dev &&
 
 COPY --chown=iiif:iiif . /opt/iiif-image-processing
 
-USER ftphaven
+USER iiif
+
 CMD ["python", "main.py"]
 

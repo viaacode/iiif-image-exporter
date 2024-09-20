@@ -106,7 +106,7 @@ pipeline {
                 container('oc') {
                     tagNewImage('int')
                 }
-                withCredentials([usernamePassword(credentialsId: 'iiif_ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'ftphaven_qas', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
                     script {
                         remoteInt.password = SSH_PASSWORD
                         remoteInt.user = SSH_USER
@@ -132,7 +132,7 @@ pipeline {
                 container('oc') {
                     tagNewImage('qas')
                 }
-                withCredentials([usernamePassword(credentialsId: 'iiif_ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'ftphaven_qas', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
                     script {
                         remoteQas.password = SSH_PASSWORD
                         remoteQas.user = SSH_USER
@@ -154,7 +154,7 @@ pipeline {
                 container('oc') {
                     tagNewImage('prd')
                 }
-                withCredentials([usernamePassword(credentialsId: 'iiif_ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'ftphaven_prd', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
                     script {
                         remotePrd.password = SSH_PASSWORD
                         remotePrd.user = SSH_USER
