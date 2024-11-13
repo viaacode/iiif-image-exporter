@@ -1,6 +1,8 @@
 # System imports
 import functools
 import os
+import logging
+import re
 # Internal imports
 from viaa.configuration import ConfigParser
 from mediahaven import MediaHaven
@@ -11,6 +13,7 @@ from mediahaven.oauth2 import ROPCGrant
 # External imports
 import pika
 
+logger = logging.getLogger(__name__)
 config_parser = ConfigParser()
 
 client_id = config_parser.app_cfg["mediahaven"]["client"]
@@ -37,18 +40,18 @@ class Consumer:
         if os.path.exists(file_path):
             os.remove(file_path)
         else:
-            print(f"The file {file_path} does not exist")
+            logger.warning(f"The file {file_path} does not exist")
         
     def on_message(self, chan, method_frame, header_frame, body, userdata=None):
-        print("Doing something")
-        # Start image processing workflow
-
         # Convert string to object
         msg = eval(body.decode())
+        
+        logger.info(f"Received {msg['action']} message for fragment: '{msg['fragment_id']}'")
         method = msg["action"]
 
         if method == "create":
             visibility = 'public' if 'public' in msg['path'] else 'restricted'
+            cp_id = re.findall("OR-.{7}", msg['path'])[0]
             fragment_id = msg["fragment_id"]
             
             export_dict = {
@@ -58,14 +61,14 @@ class Consumer:
                 "ExportLocationId": config_parser.app_cfg["mediahaven"]["export_location_id"],
                 "Reason": "IIIF image processing.",
                 "Combine": "Zip",
-                "DestinationPath": f"{visibility}/{msg['dcterms_format']}"
+                "DestinationPath": f"{cp_id}/{visibility}/{msg['dcterms_format']}"
             }
             
             try:
                 mediahaven_client._post("exports", json=export_dict)
-                print(f"MH export triggered: {export_dict}")
+                logger.info(f"MH export triggered: {export_dict}")
             except Exception as e:
-                print(f"MH export failed: {e}")
+                logger.warning(f"MH export failed: {e}")
         elif method == "delete":
             visibility = 'public' if 'public' in msg['path'] else 'restricted'
             or_id = msg['OR-id']
@@ -80,14 +83,13 @@ class Consumer:
             + "/"
             + fragment_id
             + ".jp2"
-            print(f"deleting {file_to_delete}")
+            logger.info(f"deleting {file_to_delete}")
             self.remove_file(file_to_delete)
 
-        print(f'fragment_id: {msg["fragment_id"]}')
         chan.basic_ack(delivery_tag=method_frame.delivery_tag)
         
     def main(self) -> None:
-        print(f"Start consuming:")
+        logger.info(f"Start consuming:")
         connection = pika.BlockingConnection(self.rabbit_parameters)
 
         channel = connection.channel()
